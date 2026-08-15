@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { DashboardProvider } from "@/lib/dashboard-context";
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </TooltipProvider>
           </DashboardProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
