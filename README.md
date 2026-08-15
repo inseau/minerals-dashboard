@@ -25,17 +25,6 @@ plain static `out/` folder (HTML/CSS/JS + JSON data files) that can be hosted
 anywhere — no Node.js server, no database, no environment variables required
 at runtime.
 
-## Deploying
-
-**Vercel (recommended, zero config):**
-1. Push this folder to a GitHub repo.
-2. Import the repo at [vercel.com/new](https://vercel.com/new).
-3. Vercel auto-detects Next.js and deploys the `npm run build` output. Done.
-
-**Self-hosting (any static host):**
-Run `npm run build`, then upload the contents of `out/` to any static file
-host — Nginx, Apache, GitHub Pages, Cloudflare Pages, an S3 bucket, etc.
-There is nothing dynamic to configure; it's plain files.
 
 ## Refreshing the data
 
