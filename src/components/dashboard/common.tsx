@@ -56,8 +56,8 @@ export function KpiCard({
         </Tooltip>
       </CardHeader>
       <CardContent className="px-4">
-        <div className="flex items-baseline gap-1">
-          <span className="text-2xl font-semibold tabular-nums tracking-tight">{value}</span>
+        <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
+          <span className="text-xl font-semibold tabular-nums tracking-tight break-words">{value}</span>
           {unit && <span className="text-xs text-muted-foreground">{unit}</span>}
         </div>
         {trend && (

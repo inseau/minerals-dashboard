@@ -137,67 +137,6 @@ export default function OverviewPage() {
         <EmptyState message="No rows match the current filters. Try widening the year range or clearing a filter." />
       ) : (
         <>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <KpiCard
-              title="Minerals in view"
-              value={String(view.nMinerals)}
-              icon={GemIcon}
-              tooltip="Distinct minerals in the current selection."
-            />
-            <KpiCard
-              title="Observations"
-              value={view.nObservations.toLocaleString()}
-              icon={DatabaseIcon}
-              tooltip="Mineral x country x year rows in the current selection."
-            />
-            <KpiCard
-              title="Producing countries"
-              value={String(view.nCountries)}
-              icon={GlobeIcon}
-              tooltip="Distinct countries in the current selection."
-            />
-            <KpiCard
-              title={`Avg. price, ${view.yearLabel.split("-").pop()}`}
-              value={formatUSD(view.avgPrice)}
-              unit="/tonne"
-              icon={TrendingUpIcon}
-              tooltip="Average price across the minerals currently in view, for the latest year in range. Figures are simulated, not live market data — see Data Quality & Methodology."
-            />
-            <KpiCard
-              title="Highest-priced mineral"
-              value={view.highest?.mineral ?? "—"}
-              unit={view.highest ? formatUSD(view.highest.value) + "/t" : undefined}
-              icon={GemIcon}
-              tooltip={
-                view.highest
-                  ? `${view.highest.mineral} has the highest price in the latest year of the current selection (${formatUSDExact(view.highest.value)}/t).`
-                  : "No data in the current selection."
-              }
-            />
-            <KpiCard
-              title="Most volatile"
-              value={view.mostVolatile?.mineral ?? "—"}
-              unit={view.mostVolatile ? `CV ${view.mostVolatile.cv_pct}%` : undefined}
-              icon={ActivityIcon}
-              tooltip="Highest coefficient of variation (std/mean of annual price) within the current selection."
-            />
-            <KpiCard
-              title="Largest price gain"
-              value={view.largestIncrease?.mineral ?? "—"}
-              unit={view.largestIncrease ? formatPercent(view.largestIncrease.pct) : undefined}
-              icon={TrendingUpIcon}
-              trend={view.largestIncrease ? { value: formatPercent(view.largestIncrease.pct), positive: true } : undefined}
-              tooltip={`Price change across ${view.yearLabel} for the current selection.`}
-            />
-            <KpiCard
-              title="High supply-risk rows"
-              value={formatPercent(view.highRiskPct, 1).replace("+", "")}
-              unit={`${view.highRiskRows.toLocaleString()} rows`}
-              icon={ShieldAlertIcon}
-              tooltip="Share of rows flagged high_supply_risk=1 in the current selection."
-            />
-          </div>
-
           {view.noDecliners && view.smallestIncrease && (
             <div className="rounded-lg border border-warning/30 bg-warning/10 px-4 py-2.5 text-xs text-warning">
               <strong>Note:</strong> No mineral in {showFiltered ? "this selection" : "this dataset"} actually
@@ -215,30 +154,94 @@ export default function OverviewPage() {
             </div>
           )}
 
-          <SectionCard
-            title="Producing countries"
-            description="Shading intensity reflects the selected metric. Hover a country for its data points."
-            action={
-              <Select value={mapMetric} onValueChange={(v) => setMapMetric(v as keyof CountryStat)}>
-                <SelectTrigger className="w-56">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {MAP_METRICS.map((m) => (
-                    <SelectItem key={m.key} value={m.key}>
-                      {m.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            }
-          >
-            <WorldMap data={countryStats} metricKey={mapMetric} metricLabel={mapMetricDef.label} formatValue={formatMapValue} />
-            <p className="mt-2 text-xs text-muted-foreground">
-              {countryStats.length} producing countries in the dataset. Countries with no shading aren&apos;t
-              recorded as producers for any tracked mineral.
-            </p>
-          </SectionCard>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+            <SectionCard
+              title="Producing countries"
+              description="Shading intensity reflects the selected metric. Hover a country for its data points."
+              className="lg:col-span-2"
+              action={
+                <Select value={mapMetric} onValueChange={(v) => setMapMetric(v as keyof CountryStat)}>
+                  <SelectTrigger className="w-56">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {MAP_METRICS.map((m) => (
+                      <SelectItem key={m.key} value={m.key}>
+                        {m.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              }
+            >
+              <WorldMap data={countryStats} metricKey={mapMetric} metricLabel={mapMetricDef.label} formatValue={formatMapValue} />
+              <p className="mt-2 text-xs text-muted-foreground">
+                {countryStats.length} producing countries in the dataset. Countries with no shading aren&apos;t
+                recorded as producers for any tracked mineral.
+              </p>
+            </SectionCard>
+
+            <div className="grid grid-cols-2 gap-3 content-start">
+              <KpiCard
+                title="Minerals in view"
+                value={String(view.nMinerals)}
+                icon={GemIcon}
+                tooltip="Distinct minerals in the current selection."
+              />
+              <KpiCard
+                title="Observations"
+                value={view.nObservations.toLocaleString()}
+                icon={DatabaseIcon}
+                tooltip="Mineral x country x year rows in the current selection."
+              />
+              <KpiCard
+                title="Producing countries"
+                value={String(view.nCountries)}
+                icon={GlobeIcon}
+                tooltip="Distinct countries in the current selection."
+              />
+              <KpiCard
+                title={`Avg. price, ${view.yearLabel.split("-").pop()}`}
+                value={formatUSD(view.avgPrice)}
+                unit="/tonne"
+                icon={TrendingUpIcon}
+                tooltip="Average price across the minerals currently in view, for the latest year in range. Figures are simulated, not live market data — see Data Quality & Methodology."
+              />
+              <KpiCard
+                title="Highest-priced mineral"
+                value={view.highest?.mineral ?? "—"}
+                unit={view.highest ? formatUSD(view.highest.value) + "/t" : undefined}
+                icon={GemIcon}
+                tooltip={
+                  view.highest
+                    ? `${view.highest.mineral} has the highest price in the latest year of the current selection (${formatUSDExact(view.highest.value)}/t).`
+                    : "No data in the current selection."
+                }
+              />
+              <KpiCard
+                title="Most volatile"
+                value={view.mostVolatile?.mineral ?? "—"}
+                unit={view.mostVolatile ? `CV ${view.mostVolatile.cv_pct}%` : undefined}
+                icon={ActivityIcon}
+                tooltip="Highest coefficient of variation (std/mean of annual price) within the current selection."
+              />
+              <KpiCard
+                title="Largest price gain"
+                value={view.largestIncrease?.mineral ?? "—"}
+                unit={view.largestIncrease ? formatPercent(view.largestIncrease.pct) : undefined}
+                icon={TrendingUpIcon}
+                trend={view.largestIncrease ? { value: formatPercent(view.largestIncrease.pct), positive: true } : undefined}
+                tooltip={`Price change across ${view.yearLabel} for the current selection.`}
+              />
+              <KpiCard
+                title="High supply-risk rows"
+                value={formatPercent(view.highRiskPct, 1).replace("+", "")}
+                unit={`${view.highRiskRows.toLocaleString()} rows`}
+                icon={ShieldAlertIcon}
+                tooltip="Share of rows flagged high_supply_risk=1 in the current selection."
+              />
+            </div>
+          </div>
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             <SectionCard
